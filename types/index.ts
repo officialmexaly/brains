@@ -5,6 +5,15 @@ export interface Category {
   count: number;
 }
 
+export interface Attachment {
+  id: string;
+  name: string;
+  url: string;
+  size: number; // in bytes
+  type: string; // mime type
+  uploadedAt: Date;
+}
+
 export interface Note {
   id: string;
   title: string;
@@ -14,6 +23,7 @@ export interface Note {
   createdAt: Date;
   updatedAt: Date;
   isPinned?: boolean;
+  attachments?: Attachment[];
 }
 
 export interface Task {

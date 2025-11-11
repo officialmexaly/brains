@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useBrain } from '@/lib/hooks/useBrain';
 import { useState, FormEvent } from 'react';
 import RichTextEditor from '@/components/RichTextEditor';
+import { Attachment } from '@/types';
+import { toast } from 'sonner';
 
 export default function NewNotePage() {
   const router = useRouter();
@@ -15,12 +17,25 @@ export default function NewNotePage() {
   const [category, setCategory] = useState('Personal');
   const [tagsInput, setTagsInput] = useState('');
   const [isPinned, setIsPinned] = useState(false);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const tags = tagsInput.split(',').map((tag) => tag.trim()).filter(Boolean);
-    addNote({ title, content, category, tags, isPinned });
-    router.push('/notes');
+    if (isSaving) return;
+
+    try {
+      setIsSaving(true);
+      const tags = tagsInput.split(',').map((tag) => tag.trim()).filter(Boolean);
+      await addNote({ title, content, category, tags, isPinned, attachments });
+      toast.success('Note created successfully!');
+      router.push('/notes');
+    } catch (error) {
+      console.error('Error creating note:', error);
+      toast.error('Failed to create note. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleCancel = () => {
@@ -71,7 +86,16 @@ export default function NewNotePage() {
                     </span>
                     <select
                       value={category}
-                      onChange={(e) => setCategory(e.target.value)}
+                      onChange={(e) => {
+                        if (e.target.value === '__custom__') {
+                          const custom = prompt('Enter custom category name:');
+                          if (custom && custom.trim()) {
+                            setCategory(custom.trim());
+                          }
+                        } else {
+                          setCategory(e.target.value);
+                        }
+                      }}
                       className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="Work">Work</option>
@@ -79,6 +103,10 @@ export default function NewNotePage() {
                       <option value="Learning">Learning</option>
                       <option value="Health">Health</option>
                       <option value="Ideas">Ideas</option>
+                      {!['Work', 'Personal', 'Learning', 'Health', 'Ideas'].includes(category) && (
+                        <option value={category}>{category}</option>
+                      )}
+                      <option value="__custom__">+ Add Custom</option>
                     </select>
                   </div>
                 </div>
@@ -108,9 +136,10 @@ export default function NewNotePage() {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all font-medium"
+                    disabled={isSaving}
+                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Save Note
+                    {isSaving ? 'Saving...' : 'Save Note'}
                   </button>
                 </div>
               </div>
@@ -162,6 +191,8 @@ export default function NewNotePage() {
                   content={content}
                   onChange={setContent}
                   placeholder="Start writing your note content..."
+                  attachments={attachments}
+                  onAttachmentsChange={setAttachments}
                 />
               </div>
             )}
@@ -175,7 +206,16 @@ export default function NewNotePage() {
                     </label>
                     <select
                       value={category}
-                      onChange={(e) => setCategory(e.target.value)}
+                      onChange={(e) => {
+                        if (e.target.value === '__custom__') {
+                          const custom = prompt('Enter custom category name:');
+                          if (custom && custom.trim()) {
+                            setCategory(custom.trim());
+                          }
+                        } else {
+                          setCategory(e.target.value);
+                        }
+                      }}
                       className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900"
                     >
                       <option value="Work">Work</option>
@@ -183,6 +223,10 @@ export default function NewNotePage() {
                       <option value="Learning">Learning</option>
                       <option value="Health">Health</option>
                       <option value="Ideas">Ideas</option>
+                      {!['Work', 'Personal', 'Learning', 'Health', 'Ideas'].includes(category) && (
+                        <option value={category}>{category}</option>
+                      )}
+                      <option value="__custom__">+ Add Custom Category</option>
                     </select>
                   </div>
 

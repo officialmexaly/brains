@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import { Note } from '@/types';
+import { Note, Attachment } from '@/types';
 import { toast } from 'sonner';
+import FileUpload from './FileUpload';
 
 interface NoteFormProps {
   note?: Note;
@@ -12,6 +13,7 @@ interface NoteFormProps {
     category: string;
     tags: string[];
     isPinned?: boolean;
+    attachments?: Attachment[];
   }) => Promise<void>;
   onCancel: () => void;
 }
@@ -22,6 +24,7 @@ export default function NoteForm({ note, onSubmit, onCancel }: NoteFormProps) {
   const [category, setCategory] = useState(note?.category || 'Personal');
   const [tagsInput, setTagsInput] = useState(note?.tags.join(', ') || '');
   const [isPinned, setIsPinned] = useState(note?.isPinned || false);
+  const [attachments, setAttachments] = useState<Attachment[]>(note?.attachments || []);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -31,7 +34,7 @@ export default function NoteForm({ note, onSubmit, onCancel }: NoteFormProps) {
     try {
       setIsSubmitting(true);
       const tags = tagsInput.split(',').map((tag) => tag.trim()).filter(Boolean);
-      await onSubmit({ title, content, category, tags, isPinned });
+      await onSubmit({ title, content, category, tags, isPinned, attachments });
     } catch (error) {
       console.error('Error submitting note:', error);
       toast.error('Failed to save note. Please try again.');
@@ -127,6 +130,8 @@ export default function NoteForm({ note, onSubmit, onCancel }: NoteFormProps) {
           Pin this note
         </label>
       </div>
+
+      <FileUpload attachments={attachments} onAttachmentsChange={setAttachments} />
 
       <div className="flex gap-3 pt-4">
         <button

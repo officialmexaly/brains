@@ -6,6 +6,7 @@ import { useState } from 'react';
 import Modal from '@/components/Modal';
 import NoteForm from '@/components/NoteForm';
 import NoteContent from '@/components/NoteContent';
+import AttachmentList from '@/components/AttachmentList';
 import { toast } from 'sonner';
 
 export default function NotePage() {
@@ -192,6 +193,7 @@ export default function NotePage() {
         {/* Main Content */}
         <div className="pb-12">
           <NoteContent content={note.content} />
+          <AttachmentList attachments={note.attachments || []} />
         </div>
 
         {/* Footer Metadata */}

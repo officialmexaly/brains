@@ -48,10 +48,20 @@ export function BrainProvider({ children }: { children: ReactNode }) {
       try {
         setIsLoading(true);
 
-        // Fetch notes
+        // Fetch notes with attachments
         const { data: notesData, error: notesError } = await supabase
           .from('notes')
-          .select('*')
+          .select(`
+            *,
+            attachments (
+              id,
+              name,
+              url,
+              size,
+              type,
+              created_at
+            )
+          `)
           .order('created_at', { ascending: false });
 
         if (notesError) {
@@ -62,7 +72,7 @@ export function BrainProvider({ children }: { children: ReactNode }) {
         console.log('Loaded notes from Supabase:', notesData?.length || 0);
 
         if (notesData) {
-          setNotes(notesData.map(n => ({
+          setNotes(notesData.map((n: any) => ({
             id: n.id,
             title: n.title,
             content: n.content,
@@ -71,6 +81,14 @@ export function BrainProvider({ children }: { children: ReactNode }) {
             isPinned: n.is_pinned || false,
             createdAt: new Date(n.created_at),
             updatedAt: new Date(n.updated_at),
+            attachments: n.attachments?.map((a: any) => ({
+              id: a.id,
+              name: a.name,
+              url: a.url,
+              size: a.size,
+              type: a.type,
+              uploadedAt: new Date(a.created_at),
+            })) || [],
           })));
         }
 
@@ -163,6 +181,26 @@ export function BrainProvider({ children }: { children: ReactNode }) {
         .single();
 
       if (error) throw error;
+
+      // Save attachments if any
+      if (data && note.attachments && note.attachments.length > 0) {
+        const attachmentsData = note.attachments.map((attachment) => ({
+          note_id: data.id,
+          name: attachment.name,
+          url: attachment.url,
+          size: attachment.size,
+          type: attachment.type,
+        }));
+
+        const { error: attachError } = await supabase
+          .from('attachments')
+          .insert(attachmentsData);
+
+        if (attachError) {
+          console.error('Error adding attachments:', attachError);
+        }
+      }
+
       if (data) {
         const newNote: Note = {
           id: data.id,
@@ -173,6 +211,7 @@ export function BrainProvider({ children }: { children: ReactNode }) {
           isPinned: data.is_pinned,
           createdAt: new Date(data.created_at),
           updatedAt: new Date(data.updated_at),
+          attachments: note.attachments || [],
         };
         setNotes((prev) => [newNote, ...prev]);
       }

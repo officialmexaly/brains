@@ -4,6 +4,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { useBrain } from '@/lib/hooks/useBrain';
 import { useState, useEffect, FormEvent } from 'react';
 import RichTextEditor from '@/components/RichTextEditor';
+import { Attachment } from '@/types';
 import { toast } from 'sonner';
 
 export default function EditNotePage() {
@@ -17,6 +18,7 @@ export default function EditNotePage() {
   const [category, setCategory] = useState('Personal');
   const [tagsInput, setTagsInput] = useState('');
   const [isPinned, setIsPinned] = useState(false);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -29,6 +31,7 @@ export default function EditNotePage() {
       setCategory(note.category);
       setTagsInput(note.tags.join(', '));
       setIsPinned(note.isPinned || false);
+      setAttachments(note.attachments || []);
       setLoading(false);
     } else {
       // Note not found, redirect to notes list
@@ -43,7 +46,7 @@ export default function EditNotePage() {
     try {
       setIsSaving(true);
       const tags = tagsInput.split(',').map((tag) => tag.trim()).filter(Boolean);
-      await updateNote(params.id as string, { title, content, category, tags, isPinned });
+      await updateNote(params.id as string, { title, content, category, tags, isPinned, attachments });
       toast.success('Note updated successfully!');
       router.push(`/notes/${params.id}`);
     } catch (error) {
@@ -215,6 +218,8 @@ export default function EditNotePage() {
                   content={content}
                   onChange={setContent}
                   placeholder="Start writing your note content..."
+                  attachments={attachments}
+                  onAttachmentsChange={setAttachments}
                 />
               </div>
             )}

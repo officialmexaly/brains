@@ -56,6 +56,17 @@ CREATE TABLE IF NOT EXISTS journal_entries (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Attachments Table
+CREATE TABLE IF NOT EXISTS attachments (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  note_id UUID NOT NULL REFERENCES notes(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  url TEXT NOT NULL,
+  size BIGINT NOT NULL,
+  type TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_notes_category ON notes(category);
 CREATE INDEX IF NOT EXISTS idx_notes_created_at ON notes(created_at DESC);
@@ -71,11 +82,14 @@ CREATE INDEX IF NOT EXISTS idx_articles_created_at ON knowledge_articles(created
 CREATE INDEX IF NOT EXISTS idx_entries_date ON journal_entries(date DESC);
 CREATE INDEX IF NOT EXISTS idx_entries_mood ON journal_entries(mood);
 
+CREATE INDEX IF NOT EXISTS idx_attachments_note_id ON attachments(note_id);
+
 -- Enable Row Level Security (RLS)
 ALTER TABLE notes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE knowledge_articles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE journal_entries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE attachments ENABLE ROW LEVEL SECURITY;
 
 -- Create policies (for now, allowing all operations - you can customize this later)
 -- For production, you should implement proper authentication and user-specific policies
@@ -94,6 +108,10 @@ CREATE POLICY "Allow all operations on knowledge_articles" ON knowledge_articles
 
 -- Journal Entries Policies
 CREATE POLICY "Allow all operations on journal_entries" ON journal_entries
+  FOR ALL USING (true) WITH CHECK (true);
+
+-- Attachments Policies
+CREATE POLICY "Allow all operations on attachments" ON attachments
   FOR ALL USING (true) WITH CHECK (true);
 
 -- Function to automatically update updated_at timestamp
