@@ -6,6 +6,7 @@ import { useState } from 'react';
 import Modal from '@/components/Modal';
 import NoteForm from '@/components/NoteForm';
 import NoteContent from '@/components/NoteContent';
+import { toast } from 'sonner';
 
 export default function NotePage() {
   const params = useParams();
@@ -17,21 +18,57 @@ export default function NotePage() {
 
   const handleUpdate = async (data: any) => {
     if (note) {
-      await updateNote(note.id, data);
-      setIsEditModalOpen(false);
+      try {
+        await updateNote(note.id, data);
+        setIsEditModalOpen(false);
+        toast.success('Note updated successfully!');
+      } catch (error) {
+        toast.error('Failed to update note');
+      }
     }
   };
 
   const handleDelete = async () => {
-    if (note && confirm('Are you sure you want to delete this note?')) {
-      await deleteNote(note.id);
-      router.push('/notes');
-    }
+    if (!note) return;
+
+    toast.custom((t) => (
+      <div className="bg-white rounded-lg shadow-lg p-4 border border-slate-200">
+        <p className="text-slate-900 font-medium mb-3">Are you sure you want to delete this note?</p>
+        <div className="flex gap-2">
+          <button
+            onClick={async () => {
+              toast.dismiss(t);
+              try {
+                await deleteNote(note.id);
+                toast.success('Note deleted successfully!');
+                router.push('/notes');
+              } catch (error) {
+                toast.error('Failed to delete note');
+              }
+            }}
+            className="px-3 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium"
+          >
+            Delete
+          </button>
+          <button
+            onClick={() => toast.dismiss(t)}
+            className="px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 text-sm font-medium"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ), { duration: 10000 });
   };
 
   const togglePin = async () => {
     if (note) {
-      await updateNote(note.id, { isPinned: !note.isPinned });
+      try {
+        await updateNote(note.id, { isPinned: !note.isPinned });
+        toast.success(note.isPinned ? 'Note unpinned' : 'Note pinned');
+      } catch (error) {
+        toast.error('Failed to update note');
+      }
     }
   };
 
@@ -86,7 +123,7 @@ export default function NotePage() {
           {/* Title and Meta */}
           <div className="mb-6">
             <h1 className="text-4xl font-bold !text-black mb-4 leading-tight" style={{ color: '#000000' }}>{note.title}</h1>
-            <div className="flex items-center gap-4 text-sm !text-slate-800" style={{ color: '#1e293b' }}>
+            <div className="flex flex-wrap items-center gap-2 text-sm !text-slate-800" style={{ color: '#1e293b' }}>
               <span className="flex items-center gap-1.5">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -100,13 +137,13 @@ export default function NotePage() {
                   : note.createdAt}
               </span>
               <span className="text-slate-400">•</span>
-              <span className="px-2.5 py-1 bg-slate-100 text-slate-900 rounded-md font-medium text-xs">
+              <span className="px-2.5 py-1 bg-slate-100 text-slate-900 rounded-md font-medium text-xs whitespace-nowrap">
                 {note.category}
               </span>
               {note.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="px-2.5 py-1 bg-slate-100 text-slate-800 rounded-md text-xs"
+                  className="px-2.5 py-1 bg-slate-100 text-slate-800 rounded-md text-xs whitespace-nowrap"
                 >
                   #{tag}
                 </span>

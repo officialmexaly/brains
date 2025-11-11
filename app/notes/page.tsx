@@ -6,6 +6,7 @@ import { useBrain } from '@/lib/hooks/useBrain';
 import Modal from '@/components/Modal';
 import NoteForm from '@/components/NoteForm';
 import { Note } from '@/types';
+import { toast } from 'sonner';
 
 export default function NotesPage() {
   const router = useRouter();
@@ -14,15 +15,44 @@ export default function NotesPage() {
 
   const handleUpdateNote = async (data: any) => {
     if (editingNote) {
-      await updateNote(editingNote.id, data);
-      setEditingNote(null);
+      try {
+        await updateNote(editingNote.id, data);
+        setEditingNote(null);
+        toast.success('Note updated successfully!');
+      } catch (error) {
+        toast.error('Failed to update note');
+      }
     }
   };
 
   const handleDeleteNote = async (id: string) => {
-    if (confirm('Are you sure you want to delete this note?')) {
-      await deleteNote(id);
-    }
+    toast.custom((t) => (
+      <div className="bg-white rounded-lg shadow-lg p-4 border border-slate-200">
+        <p className="text-slate-900 font-medium mb-3">Are you sure you want to delete this note?</p>
+        <div className="flex gap-2">
+          <button
+            onClick={async () => {
+              toast.dismiss(t);
+              try {
+                await deleteNote(id);
+                toast.success('Note deleted successfully!');
+              } catch (error) {
+                toast.error('Failed to delete note');
+              }
+            }}
+            className="px-3 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium"
+          >
+            Delete
+          </button>
+          <button
+            onClick={() => toast.dismiss(t)}
+            className="px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 text-sm font-medium"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ), { duration: 10000 });
   };
 
   // Strip HTML tags and get plain text preview

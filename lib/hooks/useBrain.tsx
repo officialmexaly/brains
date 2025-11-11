@@ -54,15 +54,21 @@ export function BrainProvider({ children }: { children: ReactNode }) {
           .select('*')
           .order('created_at', { ascending: false });
 
-        if (notesError) throw notesError;
+        if (notesError) {
+          console.error('Error loading notes:', notesError);
+          throw notesError;
+        }
+
+        console.log('Loaded notes from Supabase:', notesData?.length || 0);
+
         if (notesData) {
           setNotes(notesData.map(n => ({
             id: n.id,
             title: n.title,
             content: n.content,
             category: n.category,
-            tags: n.tags,
-            isPinned: n.is_pinned,
+            tags: n.tags || [],
+            isPinned: n.is_pinned || false,
             createdAt: new Date(n.created_at),
             updatedAt: new Date(n.updated_at),
           })));

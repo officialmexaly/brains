@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from 'react';
 import { Note } from '@/types';
+import { toast } from 'sonner';
 
 interface NoteFormProps {
   note?: Note;
@@ -33,7 +34,7 @@ export default function NoteForm({ note, onSubmit, onCancel }: NoteFormProps) {
       await onSubmit({ title, content, category, tags, isPinned });
     } catch (error) {
       console.error('Error submitting note:', error);
-      alert('Failed to save note. Please try again.');
+      toast.error('Failed to save note. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -73,17 +74,32 @@ export default function NoteForm({ note, onSubmit, onCancel }: NoteFormProps) {
         <label className="block text-sm font-medium text-slate-900 mb-2">
           Category
         </label>
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900"
-        >
-          <option value="Work">Work</option>
-          <option value="Personal">Personal</option>
-          <option value="Learning">Learning</option>
-          <option value="Health">Health</option>
-          <option value="Ideas">Ideas</option>
-        </select>
+        <div className="flex gap-2">
+          <select
+            value={category}
+            onChange={(e) => {
+              if (e.target.value === '__custom__') {
+                const custom = prompt('Enter custom category name:');
+                if (custom && custom.trim()) {
+                  setCategory(custom.trim());
+                }
+              } else {
+                setCategory(e.target.value);
+              }
+            }}
+            className="flex-1 px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900"
+          >
+            <option value="Work">Work</option>
+            <option value="Personal">Personal</option>
+            <option value="Learning">Learning</option>
+            <option value="Health">Health</option>
+            <option value="Ideas">Ideas</option>
+            {!['Work', 'Personal', 'Learning', 'Health', 'Ideas'].includes(category) && (
+              <option value={category}>{category}</option>
+            )}
+            <option value="__custom__">+ Add Custom Category</option>
+          </select>
+        </div>
       </div>
 
       <div>

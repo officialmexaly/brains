@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from 'react';
 import { Task } from '@/types';
+import { toast } from 'sonner';
 
 interface TaskFormProps {
   task?: Task;
@@ -43,7 +44,7 @@ export default function TaskForm({ task, onSubmit, onCancel }: TaskFormProps) {
       });
     } catch (error) {
       console.error('Error submitting task:', error);
-      alert('Failed to save task. Please try again.');
+      toast.error('Failed to save task. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
