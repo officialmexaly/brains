@@ -5,9 +5,19 @@ import { useRouter } from 'next/navigation';
 export default function Header() {
   const router = useRouter();
   return (
-    <header className="h-16 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 flex items-center justify-between px-8 shadow-sm">
-      <div className="flex-1">
-        {/* Quick Search */}
+    <header className="h-14 sm:h-16 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 flex items-center justify-between px-3 sm:px-6 lg:px-8 shadow-sm">
+      {/* Logo on mobile only */}
+      <div className="lg:hidden flex items-center gap-2">
+        <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-base shadow-lg shadow-blue-500/20">
+          B
+        </div>
+        <span className="text-lg font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+          Brain
+        </span>
+      </div>
+
+      {/* Search - Hidden on mobile, visible on desktop */}
+      <div className="hidden lg:block flex-1">
         <div className="max-w-md">
           <div className="relative group">
             <input
@@ -32,17 +42,18 @@ export default function Header() {
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        {/* Quick Add */}
+      <div className="flex items-center gap-1.5 sm:gap-2">
+        {/* Quick Add - Compact on mobile */}
         <button
           onClick={() => router.push('/notes/new')}
-          className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-medium rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all hover:scale-105"
+          className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all hover:scale-105"
         >
-          + New
+          <span className="hidden sm:inline">+ New</span>
+          <span className="sm:hidden">+</span>
         </button>
 
-        {/* Notifications */}
-        <button className="p-2 hover:bg-slate-100 rounded-xl transition-all relative group">
+        {/* Notifications - Hidden on mobile */}
+        <button className="hidden sm:flex p-2 hover:bg-slate-100 rounded-xl transition-all relative group">
           <svg
             className="w-5 h-5 text-slate-600 group-hover:text-slate-900"
             fill="none"
@@ -60,8 +71,8 @@ export default function Header() {
         </button>
 
         {/* Profile */}
-        <button className="flex items-center gap-2 hover:bg-slate-100 rounded-xl p-1 pr-3 transition-all group">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-medium text-sm shadow-lg shadow-blue-500/20 group-hover:shadow-xl group-hover:shadow-blue-500/30 transition-all group-hover:scale-105">
+        <button className="flex items-center gap-2 hover:bg-slate-100 rounded-lg sm:rounded-xl p-1 sm:pr-3 transition-all group">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center text-white font-medium text-xs sm:text-sm shadow-lg shadow-blue-500/20 group-hover:shadow-xl group-hover:shadow-blue-500/30 transition-all group-hover:scale-105">
             U
           </div>
         </button>
