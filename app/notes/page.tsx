@@ -100,8 +100,8 @@ export default function NotesPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2 sm:mb-3">Notes & Ideas</h1>
-          <p className="text-slate-200 text-sm sm:text-base lg:text-lg">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 mb-2 sm:mb-3">Notes & Ideas</h1>
+          <p className="text-slate-600 text-sm sm:text-base lg:text-lg">
             Capture your thoughts, ideas, and insights. Everything you need to remember, organized.
           </p>
         </div>
@@ -110,7 +110,7 @@ export default function NotesPage() {
         {!isLoading && categories.length > 0 && (
           <div className="mb-6 sm:mb-8">
             <div className="flex items-center justify-between mb-3 sm:mb-4">
-              <h2 className="text-lg sm:text-xl font-bold text-white">Top Categories</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900">Top Categories</h2>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               {categories.map((category) => (
@@ -139,8 +139,8 @@ export default function NotesPage() {
             {/* Mobile: Stack vertically */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="flex items-center gap-3">
-                <h2 className="text-xl sm:text-2xl font-bold text-white">All Notes</h2>
-                <span className="text-xs sm:text-sm text-slate-300 font-medium px-2 py-1 bg-white/10 rounded-lg">
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900">All Notes</h2>
+                <span className="text-xs sm:text-sm text-slate-700 font-semibold px-2.5 py-1 bg-slate-100 rounded-lg">
                   {notes.length}
                 </span>
               </div>
@@ -151,11 +151,10 @@ export default function NotesPage() {
                 <div className="flex items-center gap-0.5 sm:gap-1 bg-white/90 backdrop-blur-sm rounded-lg sm:rounded-xl p-0.5 sm:p-1 border border-slate-200/60 shadow-sm">
                   <button
                     onClick={() => setViewMode('grid')}
-                    className={`p-1.5 sm:p-2 rounded-md sm:rounded-lg transition-all ${
-                      viewMode === 'grid'
-                        ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md'
-                        : 'text-slate-600 hover:bg-slate-100'
-                    }`}
+                    className={`p-1.5 sm:p-2 rounded-md sm:rounded-lg transition-all ${viewMode === 'grid'
+                      ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md'
+                      : 'text-slate-600 hover:bg-slate-100'
+                      }`}
                     title="Grid View"
                   >
                     <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,11 +163,10 @@ export default function NotesPage() {
                   </button>
                   <button
                     onClick={() => setViewMode('list')}
-                    className={`p-1.5 sm:p-2 rounded-md sm:rounded-lg transition-all ${
-                      viewMode === 'list'
-                        ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md'
-                        : 'text-slate-600 hover:bg-slate-100'
-                    }`}
+                    className={`p-1.5 sm:p-2 rounded-md sm:rounded-lg transition-all ${viewMode === 'list'
+                      ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md'
+                      : 'text-slate-600 hover:bg-slate-100'
+                      }`}
                     title="List View"
                   >
                     <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -177,11 +175,10 @@ export default function NotesPage() {
                   </button>
                   <button
                     onClick={() => setViewMode('kanban')}
-                    className={`p-1.5 sm:p-2 rounded-md sm:rounded-lg transition-all ${
-                      viewMode === 'kanban'
-                        ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md'
-                        : 'text-slate-600 hover:bg-slate-100'
-                    }`}
+                    className={`p-1.5 sm:p-2 rounded-md sm:rounded-lg transition-all ${viewMode === 'kanban'
+                      ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md'
+                      : 'text-slate-600 hover:bg-slate-100'
+                      }`}
                     title="Kanban View"
                   >
                     <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -210,8 +207,8 @@ export default function NotesPage() {
         {isLoading && (
           <div className="flex items-center justify-center py-12 sm:py-20">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-white mx-auto mb-3 sm:mb-4"></div>
-              <p className="text-white text-base sm:text-lg">Loading your notes...</p>
+              <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-blue-600 mx-auto mb-3 sm:mb-4"></div>
+              <p className="text-slate-700 text-base sm:text-lg">Loading your notes...</p>
             </div>
           </div>
         )}
@@ -221,8 +218,8 @@ export default function NotesPage() {
           <div className="flex items-center justify-center py-12 sm:py-20 px-4">
             <div className="text-center max-w-md">
               <div className="text-5xl sm:text-6xl mb-3 sm:mb-4">📝</div>
-              <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3">No notes yet</h3>
-              <p className="text-slate-300 text-sm sm:text-base mb-5 sm:mb-6">
+              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mb-2 sm:mb-3">No notes yet</h3>
+              <p className="text-slate-600 text-sm sm:text-base mb-5 sm:mb-6">
                 Start capturing your thoughts and ideas. Click the + button below to create your first note.
               </p>
               <button
@@ -244,7 +241,7 @@ export default function NotesPage() {
                 {notes.map((note) => (
                   <div
                     key={note.id}
-                    className="bg-white/90 backdrop-blur-sm rounded-xl border border-slate-200/60 p-5 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 group hover:-translate-y-1 cursor-pointer"
+                    className="bg-white/95 backdrop-blur-sm rounded-xl border border-slate-200/60 p-5 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 group hover:-translate-y-1 cursor-pointer"
                     onClick={() => router.push(`/notes/${note.id}`)}
                   >
                     <div className="flex items-start justify-between mb-3">
@@ -255,7 +252,7 @@ export default function NotesPage() {
                         <span className="text-yellow-500 text-base ml-2">📌</span>
                       )}
                     </div>
-                    <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                    <p className="text-sm text-slate-700 mb-4 line-clamp-3 font-medium">
                       {getTextPreview(note.content)}
                     </p>
                     <div className="flex flex-wrap gap-1.5 mb-3">
@@ -294,7 +291,7 @@ export default function NotesPage() {
                 {notes.map((note) => (
                   <div
                     key={note.id}
-                    className="bg-white/90 backdrop-blur-sm rounded-lg sm:rounded-xl border border-slate-200/60 p-3 sm:p-5 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 group hover:translate-x-1 cursor-pointer"
+                    className="bg-white/95 backdrop-blur-sm rounded-lg sm:rounded-xl border border-slate-200/60 p-3 sm:p-5 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 group hover:translate-x-1 cursor-pointer"
                     onClick={() => router.push(`/notes/${note.id}`)}
                   >
                     <div className="flex items-start gap-2 sm:gap-4">
@@ -327,7 +324,7 @@ export default function NotesPage() {
                             {note.category}
                           </span>
                         </div>
-                        <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3 line-clamp-1 sm:line-clamp-2">
+                        <p className="text-xs sm:text-sm text-slate-700 mb-2 sm:mb-3 line-clamp-1 sm:line-clamp-2 font-medium">
                           {getTextPreview(note.content)}
                         </p>
                         <div className="flex items-center justify-between gap-2">
@@ -349,9 +346,9 @@ export default function NotesPage() {
                           <span className="text-xs text-gray-500 whitespace-nowrap flex-shrink-0">
                             {note.createdAt instanceof Date
                               ? note.createdAt.toLocaleDateString('en-US', {
-                                  month: 'short',
-                                  day: 'numeric'
-                                })
+                                month: 'short',
+                                day: 'numeric'
+                              })
                               : note.createdAt}
                           </span>
                         </div>
@@ -396,7 +393,7 @@ export default function NotesPage() {
                 {notes.map((note) => (
                   <div
                     key={note.id}
-                    className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-slate-200/60 p-4 sm:p-6 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 group hover:-translate-y-1"
+                    className="bg-white/95 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-slate-200/60 p-4 sm:p-6 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 group hover:-translate-y-1"
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div
@@ -441,7 +438,7 @@ export default function NotesPage() {
                     </div>
                     <p
                       onClick={() => router.push(`/notes/${note.id}`)}
-                      className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4 line-clamp-3 cursor-pointer leading-relaxed"
+                      className="text-xs sm:text-sm text-slate-700 mb-3 sm:mb-4 line-clamp-3 cursor-pointer leading-relaxed font-medium"
                     >
                       {getTextPreview(note.content)}
                     </p>
@@ -464,10 +461,10 @@ export default function NotesPage() {
                       <span className="text-xs text-gray-500 font-medium">
                         {note.createdAt instanceof Date
                           ? note.createdAt.toLocaleDateString('en-US', {
-                              month: 'short',
-                              day: 'numeric',
-                              year: window.innerWidth >= 640 ? 'numeric' : undefined
-                            })
+                            month: 'short',
+                            day: 'numeric',
+                            year: window.innerWidth >= 640 ? 'numeric' : undefined
+                          })
                           : note.createdAt}
                       </span>
                       <span className="px-2 sm:px-3 py-0.5 sm:py-1 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 text-xs rounded-md sm:rounded-lg font-bold">

@@ -3,10 +3,12 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
 
 export default function UserMenu() {
     const { user, signOut } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
+    const [avatarUrl, setAvatarUrl] = useState<string>('');
     const menuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -19,6 +21,25 @@ export default function UserMenu() {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    // Load user avatar
+    useEffect(() => {
+        async function loadAvatar() {
+            if (!user) return;
+
+            const { data: profileData } = await supabase
+                .from('user_profiles')
+                .select('avatar_url')
+                .eq('user_id', user.id)
+                .single();
+
+            if (profileData?.avatar_url) {
+                setAvatarUrl(profileData.avatar_url);
+            }
+        }
+
+        loadAvatar();
+    }, [user]);
 
     if (!user) return null;
 
@@ -33,9 +54,17 @@ export default function UserMenu() {
                 onClick={() => setIsOpen(!isOpen)}
                 className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
             >
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
-                    {getInitials(user.email || 'U')}
-                </div>
+                {avatarUrl ? (
+                    <img
+                        src={avatarUrl}
+                        alt="User avatar"
+                        className="w-8 h-8 rounded-lg object-cover"
+                    />
+                ) : (
+                    <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
+                        {getInitials(user.email || 'U')}
+                    </div>
+                )}
                 <div className="flex-1 text-left">
                     <p className="text-sm font-medium text-gray-900 truncate">
                         {user.email}
