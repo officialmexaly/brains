@@ -59,27 +59,26 @@ const MobileNav = () => {
   };
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/98 backdrop-blur-xl border-t border-slate-200/60 shadow-2xl z-50 safe-area-inset-bottom">
-      <div className="flex items-center justify-around px-1 pt-1.5 pb-2">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 safe-area-inset-bottom">
+      <div className="flex items-center justify-around px-2 py-2">
         {navItems.map((item) => {
           const active = isActive(item.href);
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`relative flex flex-col items-center justify-center flex-1 py-2 px-2 rounded-xl transition-all duration-200 ${
-                active
+              className={`relative flex flex-col items-center justify-center flex-1 py-2 px-2 rounded-lg transition-colors ${active
                   ? 'text-blue-600'
-                  : 'text-slate-600 active:scale-95'
-              }`}
+                  : 'text-gray-600'
+                }`}
             >
               {active && (
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl"></div>
+                <div className="absolute inset-0 bg-blue-50 rounded-lg"></div>
               )}
-              <div className={`relative transition-all ${active ? 'scale-110' : ''}`}>
+              <div className="relative">
                 {item.icon}
               </div>
-              <span className={`relative text-[10px] mt-1 font-bold ${active ? 'text-blue-600' : 'text-slate-600'}`}>
+              <span className={`relative text-[10px] mt-1 font-medium ${active ? 'text-blue-600' : 'text-gray-600'}`}>
                 {item.name}
               </span>
             </Link>

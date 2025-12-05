@@ -26,6 +26,17 @@ export interface Note {
   attachments?: Attachment[];
 }
 
+export interface Subtask {
+  id: string;
+  text: string;
+  completed: boolean;
+}
+
+export interface TimeEstimate {
+  value: number;
+  unit: 'minutes' | 'hours' | 'days';
+}
+
 export interface Task {
   id: string;
   title: string;
@@ -34,9 +45,28 @@ export interface Task {
   priority: 'low' | 'medium' | 'high';
   status: 'todo' | 'in-progress' | 'completed';
   dueDate?: Date;
+  // New fields
+  tags?: string[];
+  subtasks?: Subtask[];
+  startDate?: Date;
+  timeEstimate?: TimeEstimate;
+  reminder?: string;
+  notes?: string;
+  position?: number; // For Kanban board ordering
+  // Timestamps
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface KanbanColumn {
+  id: string;
+  title: string;
+  status: 'todo' | 'in-progress' | 'completed';
+  tasks: Task[];
+  color: string;
+  icon: string;
+}
+
 
 export interface KnowledgeArticle {
   id: string;

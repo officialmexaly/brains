@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Sidebar from "@/components/Sidebar";
-import MobileNav from "@/components/MobileNav";
-import Header from "@/components/Header";
 import { BrainProvider } from "@/lib/hooks/useBrain";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "sonner";
+import LayoutContent from "@/components/LayoutContent";
+import AuthGuard from "@/components/AuthGuard";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,33 +24,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans antialiased`}>
-        <BrainProvider>
-          <div className="flex h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
-            {/* Sidebar - Hidden on mobile, visible on desktop */}
-            <div className="hidden lg:block">
-              <Sidebar />
-            </div>
-
-            <div className="flex-1 flex flex-col overflow-hidden">
-              <Header />
-              <main className="flex-1 overflow-y-auto pb-16 lg:pb-0">
-                {children}
-              </main>
-            </div>
-          </div>
-
-          {/* Mobile Bottom Navigation */}
-          <MobileNav />
-
-          <Toaster
-            position="bottom-right"
-            richColors
-            toastOptions={{
-              className: 'mb-16 lg:mb-0',
-            }}
-          />
-        </BrainProvider>
+      <body className={`${inter.variable} font-sans antialiased`} suppressHydrationWarning>
+        <AuthProvider>
+          <AuthGuard>
+            <BrainProvider>
+              <LayoutContent>{children}</LayoutContent>
+              <Toaster
+                position="bottom-right"
+                richColors
+                toastOptions={{
+                  className: 'mb-16 lg:mb-0',
+                }}
+              />
+            </BrainProvider>
+          </AuthGuard>
+        </AuthProvider>
       </body>
     </html>
   );

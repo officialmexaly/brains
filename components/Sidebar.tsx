@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import UserMenu from './UserMenu';
 
 interface SidebarItem {
   name: string;
@@ -48,39 +49,9 @@ const JournalIcon = () => (
   </svg>
 );
 
-const DocumentIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-  </svg>
-);
-
-const CheckIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-  </svg>
-);
-
-const StarIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-  </svg>
-);
-
-const LightningIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-  </svg>
-);
-
-const TagIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-  </svg>
-);
-
-const SunIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+const CanvasIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z" />
   </svg>
 );
 
@@ -97,17 +68,24 @@ const SettingsIcon = () => (
   </svg>
 );
 
+const ChevronIcon = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+  </svg>
+);
+
 const sidebarItems = [
   { name: 'Dashboard', icon: 'dashboard', href: '/dashboard' },
   { name: 'Calendar', icon: 'calendar', href: '/calendar' },
+  { name: 'Canvas', icon: 'canvas', href: '/canvas' },
   {
     name: 'Notes & Ideas',
     icon: 'notes',
     href: '/notes',
     children: [
-      { name: 'All Notes', icon: 'document', href: '/notes' },
-      { name: 'Quick Capture', icon: 'lightning', href: '/notes/quick' },
-      { name: 'Favorites', icon: 'star', href: '/notes/favorites' },
+      { name: 'All Notes', icon: 'notes', href: '/notes' },
+      { name: 'Quick Capture', icon: 'notes', href: '/notes/quick' },
+      { name: 'Favorites', icon: 'notes', href: '/notes/favorites' },
     ],
   },
   {
@@ -115,10 +93,10 @@ const sidebarItems = [
     icon: 'tasks',
     href: '/tasks',
     children: [
-      { name: 'All Tasks', icon: 'document', href: '/tasks' },
-      { name: 'Today', icon: 'check', href: '/tasks/today' },
-      { name: 'Upcoming', icon: 'calendar', href: '/tasks/upcoming' },
-      { name: 'Completed', icon: 'check', href: '/tasks/completed' },
+      { name: 'All Tasks', icon: 'tasks', href: '/tasks' },
+      { name: 'Today', icon: 'tasks', href: '/tasks/today' },
+      { name: 'Upcoming', icon: 'tasks', href: '/tasks/upcoming' },
+      { name: 'Completed', icon: 'tasks', href: '/tasks/completed' },
     ],
   },
   {
@@ -126,8 +104,8 @@ const sidebarItems = [
     icon: 'knowledge',
     href: '/knowledge',
     children: [
-      { name: 'All Articles', icon: 'document', href: '/knowledge' },
-      { name: 'Categories', icon: 'tag', href: '/knowledge/categories' },
+      { name: 'All Articles', icon: 'knowledge', href: '/knowledge' },
+      { name: 'Categories', icon: 'knowledge', href: '/knowledge/categories' },
     ],
   },
   {
@@ -135,9 +113,9 @@ const sidebarItems = [
     icon: 'journal',
     href: '/journal',
     children: [
-      { name: 'All Entries', icon: 'document', href: '/journal' },
-      { name: 'Today', icon: 'sun', href: '/journal/today' },
-      { name: 'Calendar View', icon: 'calendar', href: '/journal/calendar' },
+      { name: 'All Entries', icon: 'journal', href: '/journal' },
+      { name: 'Today', icon: 'journal', href: '/journal/today' },
+      { name: 'Calendar View', icon: 'journal', href: '/journal/calendar' },
     ],
   },
 ];
@@ -175,16 +153,11 @@ export default function Sidebar() {
     const icons: Record<string, React.ReactNode> = {
       dashboard: <DashboardIcon />,
       calendar: <CalendarIcon />,
+      canvas: <CanvasIcon />,
       notes: <NotesIcon />,
       tasks: <TasksIcon />,
       knowledge: <KnowledgeIcon />,
       journal: <JournalIcon />,
-      document: <DocumentIcon />,
-      check: <CheckIcon />,
-      star: <StarIcon />,
-      lightning: <LightningIcon />,
-      tag: <TagIcon />,
-      sun: <SunIcon />,
       search: <SearchIcon />,
       settings: <SettingsIcon />,
     };
@@ -192,47 +165,41 @@ export default function Sidebar() {
   };
 
   return (
-    <div className={`${isCollapsed ? 'w-20' : 'w-64'} h-screen bg-gradient-to-br from-slate-50 to-slate-100/50 backdrop-blur-xl border-r border-slate-200/60 flex flex-col shadow-sm transition-all duration-300`}>
+    <div className={`${isCollapsed ? 'w-16' : 'w-64'} h-screen bg-white border-r border-gray-200 flex flex-col transition-all duration-200`}>
       {/* Logo */}
-      <div className="p-6 border-b border-slate-200/60 flex items-center justify-between">
-        <Link href="/dashboard" className="flex items-center gap-3 group">
-          <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-blue-500/20 group-hover:shadow-xl group-hover:shadow-blue-500/30 transition-all group-hover:scale-105">
+      <div className="h-14 px-4 border-b border-gray-200 flex items-center justify-between">
+        <Link href="/dashboard" className="flex items-center gap-2">
+          <div className="w-7 h-7 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold text-sm">
             B
           </div>
           {!isCollapsed && (
-            <span className="text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">Brain</span>
+            <span className="text-base font-semibold text-slate-900">Brain</span>
           )}
         </Link>
         <button
           onClick={toggleSidebar}
-          className="p-1.5 hover:bg-slate-200/60 rounded-lg transition-all"
+          className="p-1 hover:bg-gray-100 rounded transition-colors"
           title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
-          <svg className={`w-4 h-4 text-slate-600 transition-transform ${isCollapsed ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className={`w-4 h-4 text-gray-600 transition-transform ${isCollapsed ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-4 px-3">
-        <div>
-          {!isCollapsed && (
-            <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
-              General
-            </p>
-          )}
+      <nav className="flex-1 overflow-y-auto py-4 px-2">
+        <div className="space-y-1">
           {sidebarItems.map((item) => (
-            <div key={item.name} className="mb-1">
+            <div key={item.name}>
               {item.children ? (
                 <>
                   <button
                     onClick={() => toggleExpand(item.name)}
-                    className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 ${
-                      pathname.startsWith(item.href)
-                        ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25'
-                        : 'text-slate-700 hover:bg-white/60 hover:shadow-sm'
-                    }`}
+                    className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} px-3 py-2 text-sm font-medium rounded-lg transition-colors ${pathname.startsWith(item.href)
+                        ? 'bg-gray-100 text-gray-900'
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      }`}
                     title={isCollapsed ? item.name : ''}
                   >
                     <div className="flex items-center gap-3">
@@ -240,25 +207,21 @@ export default function Sidebar() {
                       {!isCollapsed && <span>{item.name}</span>}
                     </div>
                     {!isCollapsed && (
-                      <span className={`text-xs transform transition-transform ${expandedItems.includes(item.name) ? 'rotate-90' : ''}`}>
-                        ▶
-                      </span>
+                      <ChevronIcon />
                     )}
                   </button>
                   {!isCollapsed && expandedItems.includes(item.name) && (
-                    <div className="ml-4 mt-1 space-y-0.5 border-l-2 border-slate-200 pl-2">
+                    <div className="ml-8 mt-1 space-y-1">
                       {item.children.map((child) => (
                         <Link
                           key={child.href}
                           href={child.href}
-                          className={`flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-all ${
-                            isActive(child.href)
-                              ? 'bg-blue-50 text-blue-700 font-medium shadow-sm'
-                              : 'text-slate-600 hover:bg-white/60 hover:text-slate-900'
-                          }`}
+                          className={`flex items-center px-3 py-1.5 text-sm rounded-lg transition-colors ${isActive(child.href)
+                              ? 'text-blue-600 bg-blue-50 font-medium'
+                              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                            }`}
                         >
-                          {renderIcon(child.icon)}
-                          <span>{child.name}</span>
+                          {child.name}
                         </Link>
                       ))}
                     </div>
@@ -267,11 +230,10 @@ export default function Sidebar() {
               ) : (
                 <Link
                   href={item.href}
-                  className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 ${
-                    isActive(item.href)
-                      ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25'
-                      : 'text-slate-700 hover:bg-white/60 hover:shadow-sm'
-                  }`}
+                  className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2 text-sm font-medium rounded-lg transition-colors ${isActive(item.href)
+                      ? 'bg-gray-100 text-gray-900'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    }`}
                   title={isCollapsed ? item.name : ''}
                 >
                   {renderIcon(item.icon)}
@@ -282,21 +244,15 @@ export default function Sidebar() {
           ))}
         </div>
 
-        <div className="mt-6">
-          {!isCollapsed && (
-            <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
-              Tools
-            </p>
-          )}
+        <div className="mt-6 pt-6 border-t border-gray-200 space-y-1">
           {toolsItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 ${
-                isActive(item.href)
-                  ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25'
-                  : 'text-slate-700 hover:bg-white/60 hover:shadow-sm'
-              }`}
+              className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2 text-sm font-medium rounded-lg transition-colors ${isActive(item.href)
+                  ? 'bg-gray-100 text-gray-900'
+                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                }`}
               title={isCollapsed ? item.name : ''}
             >
               {renderIcon(item.icon)}
@@ -307,18 +263,8 @@ export default function Sidebar() {
       </nav>
 
       {/* User Section */}
-      <div className="p-4 border-t border-slate-200/60">
-        <button className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-white/60 rounded-xl transition-all group`}>
-          <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-medium shadow-lg shadow-blue-500/20 group-hover:shadow-xl group-hover:shadow-blue-500/30 transition-all group-hover:scale-105">
-            U
-          </div>
-          {!isCollapsed && (
-            <div className="flex-1 text-left">
-              <p className="font-semibold">Your Brain</p>
-              <p className="text-xs text-slate-500">Manage account</p>
-            </div>
-          )}
-        </button>
+      <div className="p-3 border-t border-gray-200">
+        <UserMenu />
       </div>
     </div>
   );

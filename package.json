@@ -9,6 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.81.0",
     "@tailwindcss/typography": "^0.5.19",
     "@tiptap/extension-code-block-lowlight": "^3.10.5",
@@ -16,10 +20,12 @@
     "@tiptap/starter-kit": "^3.10.5",
     "highlight.js": "^11.11.1",
     "lowlight": "^3.3.0",
+    "lucide-react": "^0.555.0",
     "marked": "^17.0.0",
     "next": "16.0.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "reactflow": "^11.11.4",
     "sonner": "^2.0.7"
   },
   "devDependencies": {

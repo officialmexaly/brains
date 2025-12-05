@@ -76,10 +76,10 @@ export default function NewJournalPage() {
     };
 
     return (
-        <div className="p-8">
+        <div className="p-4 md:p-8">
             <div className="max-w-screen-xl mx-auto">
                 {/* Header */}
-                <div className="mb-6">
+                <div className="mb-4 md:mb-6">
                     <button
                         onClick={handleCancel}
                         className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-4 transition-colors"
@@ -87,7 +87,7 @@ export default function NewJournalPage() {
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
-                        Back to Journal
+                        <span className="text-sm md:text-base">Back to Journal</span>
                     </button>
                 </div>
 
@@ -95,30 +95,34 @@ export default function NewJournalPage() {
                     {/* Journal Card */}
                     <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 shadow-xl overflow-hidden">
                         {/* Entry Header */}
-                        <div className="p-6 border-b border-slate-200/60">
-                            <div className="flex items-start justify-between mb-4">
-                                <div className="flex-1">
+                        <div className="p-4 md:p-6 border-b border-slate-200/60">
+                            <div className="mb-4">
+                                <div className="flex-1 mb-4">
                                     <input
                                         type="text"
                                         value={title}
                                         onChange={(e) => setTitle(e.target.value)}
-                                        className="text-3xl font-bold text-slate-900 bg-transparent border-none focus:outline-none w-full placeholder:text-slate-400"
+                                        className="text-2xl md:text-3xl font-bold text-slate-900 bg-transparent border-none focus:outline-none w-full placeholder:text-slate-400"
                                         placeholder="Entry title..."
                                         required
                                     />
-                                    <div className="flex items-center gap-3 mt-3">
-                                        <span className="flex items-center gap-1 text-sm text-slate-600">
+                                    <div className="flex flex-wrap items-center gap-2 md:gap-3 mt-3">
+                                        <span className="flex items-center gap-1 text-xs md:text-sm text-slate-600">
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                             </svg>
-                                            {new Date(date).toLocaleDateString('en-US', {
+                                            <span className="hidden sm:inline">{new Date(date).toLocaleDateString('en-US', {
                                                 year: 'numeric',
                                                 month: 'long',
                                                 day: 'numeric'
-                                            })}
+                                            })}</span>
+                                            <span className="sm:hidden">{new Date(date).toLocaleDateString('en-US', {
+                                                month: 'short',
+                                                day: 'numeric'
+                                            })}</span>
                                         </span>
                                         {mood && (
-                                            <span className="flex items-center gap-1 text-sm">
+                                            <span className="flex items-center gap-1 text-xs md:text-sm">
                                                 <span className="text-lg">{MOODS.find(m => m.value === mood)?.emoji}</span>
                                                 <span className="text-slate-600 capitalize">{mood}</span>
                                             </span>
@@ -127,18 +131,18 @@ export default function NewJournalPage() {
                                 </div>
 
                                 {/* Action Buttons */}
-                                <div className="flex items-center gap-2">
+                                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                                     <button
                                         type="button"
                                         onClick={handleCancel}
-                                        className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 transition-all font-medium"
+                                        className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 transition-all font-medium text-sm md:text-base order-2 sm:order-1"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={isSaving}
-                                        className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base order-1 sm:order-2"
                                     >
                                         {isSaving ? 'Saving...' : 'Save Entry'}
                                     </button>
@@ -159,11 +163,11 @@ export default function NewJournalPage() {
 
                         {/* Tabs */}
                         <div className="border-b border-slate-200/60">
-                            <div className="flex px-6">
+                            <div className="flex px-4 md:px-6">
                                 <button
                                     type="button"
                                     onClick={() => setActiveTab('overview')}
-                                    className={`px-4 py-3 text-sm font-medium border-b-2 transition-all ${activeTab === 'overview'
+                                    className={`px-3 md:px-4 py-3 text-sm font-medium border-b-2 transition-all ${activeTab === 'overview'
                                             ? 'border-blue-600 text-blue-600'
                                             : 'border-transparent text-slate-600 hover:text-slate-900'
                                         }`}
@@ -173,7 +177,7 @@ export default function NewJournalPage() {
                                 <button
                                     type="button"
                                     onClick={() => setActiveTab('details')}
-                                    className={`px-4 py-3 text-sm font-medium border-b-2 transition-all ${activeTab === 'details'
+                                    className={`px-3 md:px-4 py-3 text-sm font-medium border-b-2 transition-all ${activeTab === 'details'
                                             ? 'border-blue-600 text-blue-600'
                                             : 'border-transparent text-slate-600 hover:text-slate-900'
                                         }`}
@@ -185,7 +189,7 @@ export default function NewJournalPage() {
 
                         {/* Tab Content */}
                         {activeTab === 'overview' && (
-                            <div className="p-8">
+                            <div className="p-4 md:p-8">
                                 <RichTextEditor
                                     content={content}
                                     onChange={setContent}
@@ -195,7 +199,7 @@ export default function NewJournalPage() {
                         )}
 
                         {activeTab === 'details' && (
-                            <div className="p-8">
+                            <div className="p-4 md:p-8">
                                 <div className="space-y-6">
                                     <div>
                                         <label className="block text-sm font-semibold text-slate-900 mb-2">
@@ -214,18 +218,18 @@ export default function NewJournalPage() {
                                         <label className="block text-sm font-semibold text-slate-900 mb-3">
                                             How are you feeling?
                                         </label>
-                                        <div className="grid grid-cols-5 gap-2">
+                                        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
                                             {MOODS.map((moodOption) => (
                                                 <button
                                                     key={moodOption.value}
                                                     type="button"
                                                     onClick={() => setMood(mood === moodOption.value ? undefined : moodOption.value as any)}
-                                                    className={`px-3 py-3 rounded-xl border-2 transition-all text-center ${mood === moodOption.value
+                                                    className={`px-2 md:px-3 py-3 rounded-xl border-2 transition-all text-center ${mood === moodOption.value
                                                             ? moodOption.color + ' ring-2 ring-offset-2 ring-blue-500'
                                                             : 'bg-white border-slate-200 hover:bg-slate-50'
                                                         }`}
                                                 >
-                                                    <div className="text-2xl mb-1">{moodOption.emoji}</div>
+                                                    <div className="text-xl md:text-2xl mb-1">{moodOption.emoji}</div>
                                                     <div className="text-xs font-medium">{moodOption.label}</div>
                                                 </button>
                                             ))}
@@ -254,8 +258,7 @@ export default function NewJournalPage() {
                                     </div>
                                 </div>
                             </div>
-                        )}
-                    </div>
+                        )}                    </div>
                 </form>
             </div>
         </div>

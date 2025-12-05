@@ -74,33 +74,32 @@ export function useJournalEntries(options: UseJournalEntriesOptions = {}) {
     };
 
     // Create entry
-    const createEntry = async (data: {
-        title: string;
-        content: string;
-        mood?: 'great' | 'good' | 'okay' | 'bad' | 'terrible';
-        tags: string[];
-        date: Date;
-    }) => {
+    const createEntry = async (entryData: Omit<JournalEntry, 'id' | 'createdAt' | 'updatedAt'>): Promise<JournalEntry> => {
         try {
-            const { data: newEntry, error: createError } = await supabase
+            // Get current user
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error('User not authenticated');
+
+            const { data, error } = await supabase
                 .from('journal_entries')
                 .insert([
                     {
-                        title: data.title,
-                        content: data.content,
-                        mood: data.mood,
-                        tags: data.tags,
-                        date: data.date.toISOString(),
+                        user_id: user.id,
+                        title: entryData.title,
+                        content: entryData.content,
+                        mood: entryData.mood,
+                        tags: entryData.tags || [],
+                        date: entryData.date.toISOString(),
                     },
                 ])
                 .select()
                 .single();
 
-            if (createError) throw createError;
+            if (error) throw error;
 
             toast.success('Journal entry created successfully');
             await fetchEntries();
-            return newEntry;
+            return data;
         } catch (err) {
             console.error('Error creating journal entry:', err);
             toast.error('Failed to create journal entry');

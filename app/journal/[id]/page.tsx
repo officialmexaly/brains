@@ -1,34 +1,25 @@
 'use client';
 
-import { useRouter, useParams } from 'next/navigation';
-import { useEffect, useState, FormEvent } from 'react';
-import RichTextEditor from '@/components/RichTextEditor';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { JournalEntry } from '@/types';
 import { toast } from 'sonner';
 
 const MOODS = [
-    { value: 'great', label: 'Great', emoji: '😄', color: 'bg-green-100 text-green-700 border-green-300 hover:bg-green-200' },
-    { value: 'good', label: 'Good', emoji: '🙂', color: 'bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200' },
-    { value: 'okay', label: 'Okay', emoji: '😐', color: 'bg-yellow-100 text-yellow-700 border-yellow-300 hover:bg-yellow-200' },
-    { value: 'bad', label: 'Bad', emoji: '😞', color: 'bg-orange-100 text-orange-700 border-orange-300 hover:bg-orange-200' },
-    { value: 'terrible', label: 'Terrible', emoji: '😢', color: 'bg-red-100 text-red-700 border-red-300 hover:bg-red-200' },
+    { value: 'great', label: 'Great', emoji: '😄', color: 'bg-green-100 text-green-700' },
+    { value: 'good', label: 'Good', emoji: '🙂', color: 'bg-blue-100 text-blue-700' },
+    { value: 'okay', label: 'Okay', emoji: '😐', color: 'bg-yellow-100 text-yellow-700' },
+    { value: 'bad', label: 'Bad', emoji: '😞', color: 'bg-orange-100 text-orange-700' },
+    { value: 'terrible', label: 'Terrible', emoji: '😢', color: 'bg-red-100 text-red-700' },
 ] as const;
 
-export default function EditJournalPage() {
-    const router = useRouter();
+export default function ViewJournalPage() {
     const params = useParams();
-    const [activeTab, setActiveTab] = useState<'overview' | 'details'>('overview');
-
+    const router = useRouter();
+    const [activeTab, setActiveTab] = useState<'content' | 'details'>('content');
     const [entry, setEntry] = useState<JournalEntry | null>(null);
     const [loading, setLoading] = useState(true);
-    const [isSaving, setIsSaving] = useState(false);
-
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
-    const [mood, setMood] = useState<'great' | 'good' | 'okay' | 'bad' | 'terrible' | undefined>();
-    const [tagInput, setTagInput] = useState('');
-    const [date, setDate] = useState('');
 
     useEffect(() => {
         const fetchEntry = async () => {
@@ -49,15 +40,9 @@ export default function EditJournalPage() {
                 };
 
                 setEntry(entryData);
-                setTitle(entryData.title);
-                setContent(entryData.content);
-                setMood(entryData.mood);
-                setTagInput(entryData.tags?.join(', ') || '');
-                setDate(new Date(entryData.date).toISOString().split('T')[0]);
             } catch (err) {
                 console.error('Error fetching journal entry:', err);
                 toast.error('Failed to load journal entry');
-                router.push('/journal');
             } finally {
                 setLoading(false);
             }
@@ -66,63 +51,16 @@ export default function EditJournalPage() {
         if (params.id) {
             fetchEntry();
         }
-    }, [params.id, router]);
-
-    const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-        if (isSaving) return;
-
-        if (!title.trim()) {
-            toast.error('Please enter a title');
-            return;
-        }
-
-        if (!content.trim()) {
-            toast.error('Please enter some content');
-            return;
-        }
-
-        try {
-            setIsSaving(true);
-
-            const tags = tagInput
-                .split(',')
-                .map(tag => tag.trim())
-                .filter(tag => tag.length > 0);
-
-            const { error } = await supabase
-                .from('journal_entries')
-                .update({
-                    title: title.trim(),
-                    content: content.trim(),
-                    mood,
-                    tags,
-                    date: new Date(date).toISOString(),
-                })
-                .eq('id', params.id);
-
-            if (error) throw error;
-
-            toast.success('Journal entry updated successfully');
-            router.push('/journal');
-        } catch (err) {
-            console.error('Error updating journal entry:', err);
-            toast.error('Failed to update journal entry');
-        } finally {
-            setIsSaving(false);
-        }
-    };
+    }, [params.id]);
 
     const handleDelete = async () => {
-        if (!confirm('Are you sure you want to delete this entry? This action cannot be undone.')) {
+        if (!entry) return;
+        if (!confirm('Are you sure you want to delete this journal entry? This action cannot be undone.')) {
             return;
         }
 
         try {
-            const { error } = await supabase
-                .from('journal_entries')
-                .delete()
-                .eq('id', params.id);
+            const { error } = await supabase.from('journal_entries').delete().eq('id', entry.id);
 
             if (error) throw error;
 
@@ -134,220 +72,250 @@ export default function EditJournalPage() {
         }
     };
 
-    const handleCancel = () => {
-        router.push('/journal');
+    const handleEdit = () => {
+        if (entry) {
+            router.push(`/journal/${entry.id}/edit`);
+        }
+    };
+
+    const getMoodData = (moodValue?: string) => {
+        return MOODS.find((m) => m.value === moodValue);
     };
 
     if (loading) {
         return (
-            <div className="p-8">
-                <div className="max-w-screen-xl mx-auto">
-                    <div className="text-center py-12">
-                        <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                        <p className="mt-4 text-gray-600">Loading entry...</p>
-                    </div>
+            <div className="min-h-screen flex items-center justify-center bg-white">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p className="text-slate-600">Loading journal entry...</p>
                 </div>
             </div>
         );
     }
 
     if (!entry) {
-        return null;
+        return (
+            <div className="p-4 sm:p-6 lg:p-8">
+                <div className="max-w-4xl mx-auto">
+                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 p-12 text-center shadow-lg">
+                        <div className="text-6xl mb-4">📔</div>
+                        <h3 className="text-xl font-semibold text-slate-900 mb-2">Entry Not Found</h3>
+                        <p className="text-slate-600 mb-6">
+                            The journal entry you're looking for doesn't exist or has been deleted.
+                        </p>
+                        <button
+                            onClick={() => router.push('/journal')}
+                            className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-blue-500/30 transition-all hover:scale-105"
+                        >
+                            Back to Journal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
+    const moodData = getMoodData(entry.mood);
+
     return (
-        <div className="p-8">
-            <div className="max-w-screen-xl mx-auto">
-                {/* Header */}
-                <div className="mb-6">
+        <div className="min-h-screen bg-white text-black">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+                {/* Header Navigation */}
+                <div className="mb-6 sm:mb-8">
                     <button
-                        onClick={handleCancel}
-                        className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-4 transition-colors"
+                        onClick={() => router.push('/journal')}
+                        className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-6 transition-colors text-sm font-medium"
                     >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
                         Back to Journal
                     </button>
+
+                    {/* Title and Meta */}
+                    <div className="mb-6">
+                        <h1 className="text-3xl sm:text-4xl font-bold text-black mb-4 leading-tight">{entry.title}</h1>
+                        <div className="flex flex-wrap items-center gap-2 text-sm text-slate-800">
+                            <span className="flex items-center gap-1.5">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                {entry.date.toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                })}
+                            </span>
+                            {moodData && (
+                                <>
+                                    <span className="text-slate-400">•</span>
+                                    <span className={`px-2.5 py-1 ${moodData.color} rounded-md font-medium text-xs whitespace-nowrap flex items-center gap-1`}>
+                                        <span>{moodData.emoji}</span>
+                                        {moodData.label}
+                                    </span>
+                                </>
+                            )}
+                            {entry.tags && entry.tags.length > 0 && (
+                                <>
+                                    <span className="text-slate-400">•</span>
+                                    {entry.tags.map((tag) => (
+                                        <span
+                                            key={tag}
+                                            className="px-2.5 py-1 bg-slate-100 text-slate-800 rounded-md text-xs whitespace-nowrap"
+                                        >
+                                            #{tag}
+                                        </span>
+                                    ))}
+                                </>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Action Bar */}
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 pb-6 border-b border-slate-200">
+                        <button
+                            onClick={handleEdit}
+                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all text-sm font-medium flex items-center gap-2"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                            Edit
+                        </button>
+                        <button
+                            onClick={handleDelete}
+                            className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-red-100 hover:text-red-700 transition-all text-sm font-medium flex items-center gap-2"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Delete
+                        </button>
+                    </div>
                 </div>
 
-                <form onSubmit={handleSubmit}>
-                    {/* Journal Card */}
-                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 shadow-xl overflow-hidden">
-                        {/* Entry Header */}
-                        <div className="p-6 border-b border-slate-200/60">
-                            <div className="flex items-start justify-between mb-4">
-                                <div className="flex-1">
-                                    <input
-                                        type="text"
-                                        value={title}
-                                        onChange={(e) => setTitle(e.target.value)}
-                                        className="text-3xl font-bold text-slate-900 bg-transparent border-none focus:outline-none w-full placeholder:text-slate-400"
-                                        placeholder="Entry title..."
-                                        required
-                                    />
-                                    <div className="flex items-center gap-3 mt-3">
-                                        <span className="flex items-center gap-1 text-sm text-slate-600">
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                            {new Date(date).toLocaleDateString('en-US', {
+                {/* Tabs */}
+                <div className="border-b border-slate-200 mb-6">
+                    <div className="flex gap-1">
+                        <button
+                            onClick={() => setActiveTab('content')}
+                            className={`px-4 py-3 text-sm font-medium border-b-2 transition-all ${activeTab === 'content'
+                                    ? 'border-blue-600 text-blue-600'
+                                    : 'border-transparent text-slate-600 hover:text-slate-900'
+                                }`}
+                        >
+                            Content
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('details')}
+                            className={`px-4 py-3 text-sm font-medium border-b-2 transition-all ${activeTab === 'details'
+                                    ? 'border-blue-600 text-blue-600'
+                                    : 'border-transparent text-slate-600 hover:text-slate-900'
+                                }`}
+                        >
+                            Details
+                        </button>
+                    </div>
+                </div>
+
+                {/* Tab Content */}
+                {activeTab === 'content' && (
+                    <div className="pb-12">
+                        <div
+                            className="prose prose-slate max-w-none prose-headings:text-black prose-p:text-black prose-li:text-black prose-strong:text-black"
+                            dangerouslySetInnerHTML={{ __html: entry.content }}
+                        />
+                    </div>
+                )}
+
+                {activeTab === 'details' && (
+                    <div className="pb-12">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            {/* Entry Information */}
+                            <div>
+                                <h3 className="text-lg font-semibold text-slate-900 mb-4">Entry Information</h3>
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="text-sm font-medium text-slate-600">Date</label>
+                                        <p className="mt-1 text-slate-900">
+                                            {entry.date.toLocaleDateString('en-US', {
+                                                weekday: 'long',
                                                 year: 'numeric',
                                                 month: 'long',
                                                 day: 'numeric'
                                             })}
-                                        </span>
-                                        {mood && (
-                                            <span className="flex items-center gap-1 text-sm">
-                                                <span className="text-lg">{MOODS.find(m => m.value === mood)?.emoji}</span>
-                                                <span className="text-slate-600 capitalize">{mood}</span>
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Action Buttons */}
-                                <div className="flex items-center gap-2">
-                                    <button
-                                        type="button"
-                                        onClick={handleCancel}
-                                        className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 transition-all font-medium"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        disabled={isSaving}
-                                        className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        {isSaving ? 'Saving...' : 'Update Entry'}
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Tags Input */}
-                            <div>
-                                <input
-                                    type="text"
-                                    value={tagInput}
-                                    onChange={(e) => setTagInput(e.target.value)}
-                                    className="w-full px-3 py-2 bg-slate-100 text-slate-700 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
-                                    placeholder="Add tags (comma separated)..."
-                                />
-                            </div>
-                        </div>
-
-                        {/* Tabs */}
-                        <div className="border-b border-slate-200/60">
-                            <div className="flex px-6">
-                                <button
-                                    type="button"
-                                    onClick={() => setActiveTab('overview')}
-                                    className={`px-4 py-3 text-sm font-medium border-b-2 transition-all ${activeTab === 'overview'
-                                            ? 'border-blue-600 text-blue-600'
-                                            : 'border-transparent text-slate-600 hover:text-slate-900'
-                                        }`}
-                                >
-                                    Overview
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setActiveTab('details')}
-                                    className={`px-4 py-3 text-sm font-medium border-b-2 transition-all ${activeTab === 'details'
-                                            ? 'border-blue-600 text-blue-600'
-                                            : 'border-transparent text-slate-600 hover:text-slate-900'
-                                        }`}
-                                >
-                                    Details
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Tab Content */}
-                        {activeTab === 'overview' && (
-                            <div className="p-8">
-                                <RichTextEditor
-                                    content={content}
-                                    onChange={setContent}
-                                    placeholder="Write your thoughts..."
-                                />
-                            </div>
-                        )}
-
-                        {activeTab === 'details' && (
-                            <div className="p-8">
-                                <div className="space-y-6">
-                                    <div>
-                                        <label className="block text-sm font-semibold text-slate-900 mb-2">
-                                            Date
-                                        </label>
-                                        <input
-                                            type="date"
-                                            value={date}
-                                            onChange={(e) => setDate(e.target.value)}
-                                            className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900"
-                                            required
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-semibold text-slate-900 mb-3">
-                                            How are you feeling?
-                                        </label>
-                                        <div className="grid grid-cols-5 gap-2">
-                                            {MOODS.map((moodOption) => (
-                                                <button
-                                                    key={moodOption.value}
-                                                    type="button"
-                                                    onClick={() => setMood(mood === moodOption.value ? undefined : moodOption.value as any)}
-                                                    className={`px-3 py-3 rounded-xl border-2 transition-all text-center ${mood === moodOption.value
-                                                            ? moodOption.color + ' ring-2 ring-offset-2 ring-blue-500'
-                                                            : 'bg-white border-slate-200 hover:bg-slate-50'
-                                                        }`}
-                                                >
-                                                    <div className="text-2xl mb-1">{moodOption.emoji}</div>
-                                                    <div className="text-xs font-medium">{moodOption.label}</div>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-semibold text-slate-900 mb-2">
-                                            Tags
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={tagInput}
-                                            onChange={(e) => setTagInput(e.target.value)}
-                                            className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900"
-                                            placeholder="e.g. gratitude, work, reflection"
-                                        />
-                                        <p className="text-sm text-slate-500 mt-2">Separate tags with commas</p>
-                                    </div>
-
-                                    {/* Delete Button */}
-                                    <div className="pt-4 border-t border-slate-200">
-                                        <button
-                                            type="button"
-                                            onClick={handleDelete}
-                                            className="w-full px-4 py-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all font-medium"
-                                        >
-                                            Delete Entry
-                                        </button>
-                                    </div>
-
-                                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                                        <h4 className="text-sm font-semibold text-blue-900 mb-2">💡 Tip</h4>
-                                        <p className="text-sm text-blue-700">
-                                            Use the rich text editor to format your journal entries. You can add headings, lists, and more to organize your thoughts.
                                         </p>
                                     </div>
+                                    {moodData && (
+                                        <div>
+                                            <label className="text-sm font-medium text-slate-600">Mood</label>
+                                            <div className="mt-2 flex items-center gap-2">
+                                                <span className="text-3xl">{moodData.emoji}</span>
+                                                <span className="text-slate-900 font-medium">{moodData.label}</span>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
-                        )}
+
+                            {/* Tags and Metadata */}
+                            <div>
+                                <h3 className="text-lg font-semibold text-slate-900 mb-4">Tags & Metadata</h3>
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="text-sm font-medium text-slate-600">Tags</label>
+                                        <div className="mt-2 flex flex-wrap gap-2">
+                                            {entry.tags && entry.tags.length > 0 ? (
+                                                entry.tags.map((tag) => (
+                                                    <span
+                                                        key={tag}
+                                                        className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium"
+                                                    >
+                                                        #{tag}
+                                                    </span>
+                                                ))
+                                            ) : (
+                                                <p className="text-slate-500 text-sm">No tags</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="text-sm font-medium text-slate-600">Created</label>
+                                        <p className="mt-1 text-slate-900">
+                                            {entry.createdAt.toLocaleDateString('en-US', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            })}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <label className="text-sm font-medium text-slate-600">Last Updated</label>
+                                        <p className="mt-1 text-slate-900">
+                                            {entry.updatedAt.toLocaleDateString('en-US', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            })}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <label className="text-sm font-medium text-slate-600">Statistics</label>
+                                        <div className="mt-1 space-y-1 text-sm text-slate-900">
+                                            <p>{entry.content.replace(/<[^>]*>/g, '').split(' ').length} words</p>
+                                            <p>{entry.content.replace(/<[^>]*>/g, '').length} characters</p>
+                                            <p>{Math.ceil(entry.content.replace(/<[^>]*>/g, '').split(' ').length / 200)} min read</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </form>
+                )}
             </div>
         </div>
     );

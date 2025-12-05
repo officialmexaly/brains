@@ -123,51 +123,51 @@ export default function JournalPage() {
   });
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent mb-3">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent mb-2 sm:mb-3">
             Daily Journal
           </h1>
-          <p className="text-slate-600 text-lg">
+          <p className="text-slate-600 text-sm sm:text-base lg:text-lg">
             Reflect on your day, track your mood, and document your journey.
           </p>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
+          <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 lg:p-6 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Total Entries</p>
-                <p className="text-3xl font-bold text-gray-900">{totalEntries}</p>
+                <p className="text-xs sm:text-sm text-gray-600 mb-1">Total Entries</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900">{totalEntries}</p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-2xl">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center text-xl sm:text-2xl flex-shrink-0">
                 📝
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
+          <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 lg:p-6 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">This Week</p>
-                <p className="text-3xl font-bold text-gray-900">{thisWeekEntries}</p>
+                <p className="text-xs sm:text-sm text-gray-600 mb-1">This Week</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900">{thisWeekEntries}</p>
               </div>
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-2xl">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center text-xl sm:text-2xl flex-shrink-0">
                 📅
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
+          <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 lg:p-6 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Current Mood</p>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-xs sm:text-sm text-gray-600 mb-1">Current Mood</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900">
                   {entries.length > 0 ? getMoodEmoji(entries[0].mood) : '😊'}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-2xl">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center text-xl sm:text-2xl flex-shrink-0">
                 💭
               </div>
             </div>
@@ -175,10 +175,10 @@ export default function JournalPage() {
         </div>
 
         {/* Filters */}
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-6">
           <button
             onClick={() => setSelectedFilter('all')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedFilter === 'all'
+            className={`px-3 sm:px-4 py-2 rounded-lg sm:rounded-xl font-medium transition-colors text-xs sm:text-sm lg:text-base ${selectedFilter === 'all'
                 ? 'bg-blue-600 text-white'
                 : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
               }`}
@@ -187,7 +187,7 @@ export default function JournalPage() {
           </button>
           <button
             onClick={() => setSelectedFilter('today')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedFilter === 'today'
+            className={`px-3 sm:px-4 py-2 rounded-lg sm:rounded-xl font-medium transition-colors text-xs sm:text-sm lg:text-base ${selectedFilter === 'today'
                 ? 'bg-blue-600 text-white'
                 : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
               }`}
@@ -196,7 +196,7 @@ export default function JournalPage() {
           </button>
           <button
             onClick={() => setSelectedFilter('week')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedFilter === 'week'
+            className={`px-3 sm:px-4 py-2 rounded-lg sm:rounded-xl font-medium transition-colors text-xs sm:text-sm lg:text-base ${selectedFilter === 'week'
                 ? 'bg-blue-600 text-white'
                 : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
               }`}
@@ -205,7 +205,7 @@ export default function JournalPage() {
           </button>
           <button
             onClick={() => setSelectedFilter('month')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedFilter === 'month'
+            className={`px-3 sm:px-4 py-2 rounded-lg sm:rounded-xl font-medium transition-colors text-xs sm:text-sm lg:text-base ${selectedFilter === 'month'
                 ? 'bg-blue-600 text-white'
                 : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
               }`}
@@ -252,41 +252,39 @@ export default function JournalPage() {
                       <div
                         key={entry.id}
                         onClick={() => handleEditEntry(entry.id)}
-                        className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 p-5 hover:shadow-xl hover:shadow-blue-500/5 transition-all cursor-pointer hover:-translate-y-1"
+                        className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 p-4 md:p-5 hover:shadow-xl hover:shadow-blue-500/5 transition-all cursor-pointer hover:-translate-y-1"
                       >
-                        <div className="flex items-start gap-4">
-                          <div className="flex items-center h-6">
-                            <div className="text-2xl">{getMoodEmoji(entry.mood)}</div>
+                        <div className="flex items-start gap-3 md:gap-4">
+                          <div className="flex items-center h-6 flex-shrink-0">
+                            <div className="text-xl md:text-2xl">{getMoodEmoji(entry.mood)}</div>
                           </div>
-                          <div className="flex-1">
-                            <div className="flex items-start justify-between mb-2">
-                              <h3 className="font-semibold text-gray-900">{entry.title}</h3>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
+                              <h3 className="font-semibold text-gray-900 text-base md:text-lg break-words">{entry.title}</h3>
                               {entry.mood && (
-                                <span className={`px-3 py-1 rounded-full text-xs font-medium border capitalize ${getMoodColor(entry.mood)}`}>
+                                <span className={`px-2 md:px-3 py-1 rounded-full text-xs font-medium border capitalize whitespace-nowrap ${getMoodColor(entry.mood)}`}>
                                   {entry.mood}
                                 </span>
                               )}
                             </div>
                             <div
-                              className="text-sm text-gray-600 mb-3 line-clamp-2"
+                              className="text-sm text-gray-600 mb-3 line-clamp-2 break-words"
                               dangerouslySetInnerHTML={{ __html: entry.content }}
                             />
-                            <div className="flex items-center gap-4 text-sm">
-                              <span className="text-gray-500">🕒 {formatDate(entry.date)}</span>
+                            <div className="flex flex-wrap items-center gap-3 md:gap-4 text-xs md:text-sm">
+                              <span className="text-gray-500 whitespace-nowrap">🕒 {formatDate(entry.date)}</span>
                               {entry.tags && entry.tags.length > 0 && (
-                                <div className="flex items-center gap-2">
+                                <div className="flex flex-wrap items-center gap-2">
                                   {entry.tags.slice(0, 3).map((tag) => (
                                     <span
                                       key={tag}
-                                      className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md"
+                                      className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-xs"
                                     >
                                       #{tag}
                                     </span>
                                   ))}
                                   {entry.tags.length > 3 && (
-                                    <span className="text-gray-500 text-xs">
-                                      +{entry.tags.length - 3} more
-                                    </span>
+                                    <span className="text-gray-500 text-xs">+{entry.tags.length - 3} more</span>
                                   )}
                                 </div>
                               )}

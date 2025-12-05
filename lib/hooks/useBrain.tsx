@@ -168,9 +168,14 @@ export function BrainProvider({ children }: { children: ReactNode }) {
   // Notes CRUD
   const addNote = async (note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>) => {
     try {
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
       const { data, error } = await supabase
         .from('notes')
         .insert({
+          user_id: user.id,
           title: note.title,
           content: note.content,
           category: note.category,
@@ -243,10 +248,10 @@ export function BrainProvider({ children }: { children: ReactNode }) {
           prev.map((note) =>
             note.id === id
               ? {
-                  ...note,
-                  ...updatedNote,
-                  updatedAt: new Date(data.updated_at),
-                }
+                ...note,
+                ...updatedNote,
+                updatedAt: new Date(data.updated_at),
+              }
               : note
           )
         );
@@ -271,9 +276,14 @@ export function BrainProvider({ children }: { children: ReactNode }) {
   // Tasks CRUD
   const addTask = async (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => {
     try {
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
       const { data, error } = await supabase
         .from('tasks')
         .insert({
+          user_id: user.id,
           title: task.title,
           description: task.description,
           category: task.category,
@@ -328,10 +338,10 @@ export function BrainProvider({ children }: { children: ReactNode }) {
           prev.map((task) =>
             task.id === id
               ? {
-                  ...task,
-                  ...updatedTask,
-                  updatedAt: new Date(data.updated_at),
-                }
+                ...task,
+                ...updatedTask,
+                updatedAt: new Date(data.updated_at),
+              }
               : task
           )
         );
@@ -356,9 +366,14 @@ export function BrainProvider({ children }: { children: ReactNode }) {
   // Articles CRUD
   const addArticle = async (article: Omit<KnowledgeArticle, 'id' | 'createdAt' | 'updatedAt'>) => {
     try {
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
       const { data, error } = await supabase
         .from('knowledge_articles')
         .insert({
+          user_id: user.id,
           title: article.title,
           content: article.content,
           excerpt: article.excerpt,
@@ -366,7 +381,7 @@ export function BrainProvider({ children }: { children: ReactNode }) {
           tags: article.tags,
           image_url: article.imageUrl || null,
           read_time: article.readTime,
-          author: article.author,
+          author: article.author || user.email || 'You',
         })
         .select()
         .single();
@@ -419,10 +434,10 @@ export function BrainProvider({ children }: { children: ReactNode }) {
           prev.map((article) =>
             article.id === id
               ? {
-                  ...article,
-                  ...updatedArticle,
-                  updatedAt: new Date(data.updated_at),
-                }
+                ...article,
+                ...updatedArticle,
+                updatedAt: new Date(data.updated_at),
+              }
               : article
           )
         );
@@ -447,9 +462,14 @@ export function BrainProvider({ children }: { children: ReactNode }) {
   // Entries CRUD
   const addEntry = async (entry: Omit<JournalEntry, 'id' | 'createdAt' | 'updatedAt'>) => {
     try {
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
       const { data, error } = await supabase
         .from('journal_entries')
         .insert({
+          user_id: user.id,
           title: entry.title,
           content: entry.content,
           mood: entry.mood || null,
@@ -501,10 +521,10 @@ export function BrainProvider({ children }: { children: ReactNode }) {
           prev.map((entry) =>
             entry.id === id
               ? {
-                  ...entry,
-                  ...updatedEntry,
-                  updatedAt: new Date(data.updated_at),
-                }
+                ...entry,
+                ...updatedEntry,
+                updatedAt: new Date(data.updated_at),
+              }
               : entry
           )
         );
