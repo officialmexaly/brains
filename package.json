@@ -22,7 +22,7 @@
     "lowlight": "^3.3.0",
     "lucide-react": "^0.555.0",
     "marked": "^17.0.0",
-    "next": "16.0.1",
+    "next": "16.0.10",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-easy-crop": "^5.5.6",
